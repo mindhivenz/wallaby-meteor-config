@@ -1,0 +1,26 @@
+{
+  "name": "@mindhive/wallaby-meteor-config",
+  "version": "1.0.0",
+  "description": "Wallaby setup for our standard Meteor project layout",
+  "contributors": [
+    {
+      "name": "Damon Maria",
+      "email": "damon@mindhive.co.nz"
+    }
+  ],
+  "private": false,
+  "main": "./index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:mindhivenz/wallaby-meteor-config.git"
+  },
+  "dependencies": {
+    "babel-core": "^6.18.2",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.18.0",
+    "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-polyfill": "^6.16.0",
+    "babel-preset-meteor": "^6.14.0",
+    "babel-preset-react": "^6.16.0",
+    "babel-root-import": "^4.1.5"
+  }
+}
