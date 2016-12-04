@@ -15,6 +15,8 @@ module.exports = require('@mindhive/wallaby-meteor-config')({
 })
 ````
 
+Additional opens can be seen at the top of [index.js](https://github.com/mindhivenz/wallaby-meteor-config/blob/master/index.js).
+
 ## Required project layout
 
 - `src`

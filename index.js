@@ -13,6 +13,17 @@
 var fs = require('fs');
 var path = require('path');
 
+module.exports = function(options) {
+  if (! options) {
+    options = {}
+  }
+  var meteorPort = options.meteorPort || 3000
+  process.env.NODE_ENV = 'test'
+  process.env.ROOT_URL = options.rootUrl || 'http://localhost:' + meteorPort + '/'
+  process.env.MONGO_URL = options.mongoUrl || 'mongodb://127.0.0.1:' + (meteorPort + 1) + '/wallaby'
+  return config
+}
+
 var nodePath = require('child_process')
     .execSync('meteor node -e "process.stdout.write(process.execPath)"', { encoding: 'utf8' });
 var relativeAppPath = 'src';  // Not, this is intentionally repeated below
@@ -449,15 +460,4 @@ function config(wallaby) {
       }).run();
     },
   };
-}
-
-module.exports = function(options) {
-  if (! options) {
-    options = {}
-  }
-  var meteorPort = options.meteorPort || 3000
-  process.env.NODE_ENV = 'test'
-  process.env.ROOT_URL = options.rootUrl || 'http://localhost:' + meteorPort + '/'
-  process.env.MONGO_URL = options.mongoUrl || 'mongodb://127.0.0.1:' + (meteorPort + 1) + '/wallaby'
-  return config
 }
