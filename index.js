@@ -29,12 +29,6 @@ function config(wallaby) {
   process.env.NODE_PATH += path.delimiter +
     path.join(wallaby.projectCacheDir, 'imports');
 
-  var appBabelConfig = JSON.parse(
-    fs.readFileSync(
-      path.join(wallaby.localProjectDir, relativeAppPath, '.babelrc')
-    )
-  );
-
   var babelConfig = {
     presets: [
       'meteor',
@@ -53,14 +47,18 @@ function config(wallaby) {
     ]
   }
 
-  for (k in appBabelConfig) {
-    if (! Array.isArray(appBabelConfig[k])) {
-      throw new Error('Not implemented yet')
+  var appBabelRcPath = path.join(wallaby.localProjectDir, relativeAppPath, '.babelrc')
+  if (fs.existsSync(appBabelRcPath)) {
+    var appBabelConfig = JSON.parse(fs.readFileSync(appBabelRcPath));
+    for (k in appBabelConfig) {
+      if (! Array.isArray(appBabelConfig[k])) {
+        throw new Error('Not implemented yet')
+      }
+      if (! babelConfig[k]) {
+        babelConfig[k] = []
+      }
+      Array.prototype.push.apply(babelConfig[k], appBabelConfig[k])
     }
-    if (! babelConfig[k]) {
-      babelConfig[k] = []
-    }
-    Array.prototype.push.apply(babelConfig[k], appBabelConfig[k])
   }
 
   var compiler = wallaby.compilers.babel(babelConfig)
