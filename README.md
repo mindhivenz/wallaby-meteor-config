@@ -2,7 +2,7 @@
 
 ## Install
 
-1. In the root of the project: `yarn add @mindhive/wallaby-meteor-config` (use `--dev` if this is in a package)
+1. In the root of the project: `yarn add --dev @mindhive/wallaby-meteor-config`
 2. Create `wallaby.js` in the root of the project something like the example below
 3. Setup a IDEA Wallaby run configuration using `wallaby.js`
 
@@ -30,7 +30,10 @@ Test files match `*.spec.js/jsx` and can be under `.specs` or `imports`.
 
 ## Babel
 
-This Wallaby setup uses the projects `.babelrc` file (if it exists)
+This Wallaby setup uses the Meteor app's `.babelrc` file (if it exists)
 and adds in the necessary plugins to mimic Meteor's Babel setup.
 The dependencies required to do this are automatically brought
 in by this package.
+
+If you need your own `.babelrc` (for example, if using Babel CLI to transpile a package)
+then that will be passed to Wallaby instead.
