@@ -78,21 +78,23 @@ function config(wallaby) {
 
   return {
     files: [
-      'src/imports/**/*.@(js|jsx)',
+      'src/**/*.@(js|jsx)',
       'src/.specs/**/*.js',
       '!src/.specs/**/*.spec.js',
       '!src/**/*.spec.@(js|jsx)',
       '!src/**/*.story.@(js|jsx)',
+      '!src/node-modules/**/*',
     ],
 
     tests: [
-      'src/imports/**/*.spec.@(js|jsx)',
+      'src/**/*.spec.@(js|jsx)',
       'src/.specs/**/*.spec.js',
+      '!src/node-modules/**/*',
     ],
 
     compilers: {
-      'src/.specs/**/*.js': compiler,
       'src/**/*.@(js|jsx)': compiler,
+      'src/.specs/**/*.js': compiler,
     },
 
     env: {
