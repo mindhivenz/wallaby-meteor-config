@@ -2,7 +2,7 @@
 
 ## Install
 
-1. In the root of the project: `yarn add @mindhive/wallaby-meteor-config`
+1. In the root of the project: `yarn add @mindhive/wallaby-meteor-config` (use `--dev` if this is in a package)
 2. Create `wallaby.js` in the root of the project something like the example below
 3. Setup a IDEA Wallaby run configuration using `wallaby.js`
 
