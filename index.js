@@ -118,7 +118,11 @@ function config(wallaby) {
       wallaby.delayStart();
 
       process.on('unhandledRejection', function(reason, promise) {
-        console.error('Unhandled promise rejection', reason)
+        const errorArgs = ['Unhandled promise rejection', reason]
+        if (reason.stack) {
+          errorArgs.push(reason.stack)
+        }
+        console.error.apply(console, errorArgs)  // eslint-disable-line no-console
       });
 
       var path = require('path');
