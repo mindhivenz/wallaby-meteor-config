@@ -118,7 +118,7 @@ function config(wallaby) {
       wallaby.delayStart();
 
       process.on('unhandledRejection', function(reason, promise) {
-        var exception = reason.stack ? reason.stack.replace(/\(\/.*?instrumented\//g, '(/') : reason
+        var exception = reason.stack ? reason.stack.replace(/\(\/.*?\/instrumented\//g, '(') : reason
         console.error('Unhandled promise rejection', exception)
       });
 
