@@ -83,13 +83,13 @@ function config(wallaby) {
       '!src/.specs/**/*.spec.js',
       '!src/**/*.spec.@(js|jsx)',
       '!src/**/*.story.@(js|jsx)',
-      '!src/node-modules/**/*',
+      '!src/node_modules/**/*',
     ],
 
     tests: [
       'src/**/*.spec.@(js|jsx)',
       'src/.specs/**/*.spec.js',
-      '!src/node-modules/**/*',
+      '!src/node_modules/**/*',
     ],
 
     compilers: {
