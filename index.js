@@ -26,7 +26,7 @@ module.exports = function(options) {
 
 var nodePath = require('child_process')
     .execSync('meteor node -e "process.stdout.write(process.execPath)"', { encoding: 'utf8' });
-var relativeAppPath = 'src';  // Not, this is intentionally repeated below
+var relativeAppPath = 'src';  // Note, this is intentionally repeated below
 
 
 function config(wallaby) {
@@ -34,11 +34,9 @@ function config(wallaby) {
   process.env.NODE_PATH += path.delimiter +
     path.join(wallaby.localProjectDir, relativeAppPath, '.meteor/local/build/programs/server/node_modules');
 
+  // REVISIT: would have thought with Wallaby changes this wouldn't be needed anymore
   process.env.NODE_PATH += path.delimiter +
     path.join(wallaby.localProjectDir, relativeAppPath, 'node_modules');
-
-  process.env.NODE_PATH += path.delimiter +
-    path.join(wallaby.projectCacheDir, 'imports');
 
   var babelConfig
   if (! fs.existsSync(path.join(wallaby.localProjectDir, '.babelrc'))) {
