@@ -47,7 +47,7 @@ function config(wallaby) {
         'react'
       ],
       plugins: [
-        ['root-import', {
+        ['@mindhive/babel-plugin-root-import', {
           rootPathPrefix: '/',
           rootPathSuffix: 'src'
         }]
