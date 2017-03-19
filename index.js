@@ -47,9 +47,9 @@ function config(wallaby) {
         'react'
       ],
       plugins: [
-        ['babel-plugin-root-import', {
-          rootPathPrefix: '/',
-          rootPathSuffix: 'src'
+        ['babel-project-relative-import', {
+          importPathPrefix: '/',
+          sourceDir: 'src/'
         }],
         'transform-es2015-modules-commonjs',
         'transform-runtime'
