@@ -132,6 +132,7 @@ function config(wallaby) {
         }
       }
 
+      require('babel-polyfill')
       require('reify/node/runtime')
 
       //
