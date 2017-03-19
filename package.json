@@ -1,6 +1,6 @@
 {
   "name": "@mindhive/wallaby-meteor-config",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "Wallaby setup for our standard Meteor project layout",
   "contributors": [
     {
