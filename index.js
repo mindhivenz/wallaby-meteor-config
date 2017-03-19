@@ -47,12 +47,10 @@ function config(wallaby) {
         'react'
       ],
       plugins: [
-        ['babel-plugin-root-import', {
+        ['root-import', {
           rootPathPrefix: '/',
           rootPathSuffix: 'src'
-        }],
-        'transform-es2015-modules-commonjs',
-        'transform-runtime'
+        }]
       ]
     }
     var appBabelRcPath = path.join(wallaby.localProjectDir, relativeAppPath, '.babelrc')
