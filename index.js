@@ -18,6 +18,7 @@ module.exports = function(options) {
     options = {}
   }
   var meteorPort = options.meteorPort || 3000
+  // Only way we can pass data to child processes is through environment
   process.env.NODE_ENV = 'test'
   process.env.ROOT_URL = options.rootUrl || 'http://localhost:' + meteorPort + '/'
   process.env.MONGO_URL = options.mongoUrl || 'mongodb://127.0.0.1:' + (meteorPort + 1) + '/wallaby'
@@ -46,15 +47,12 @@ function config(wallaby) {
         'react'
       ],
       plugins: [
-        'transform-es2015-modules-commonjs',
-        ['transform-runtime', {
-          polyfill: false,
-          regenerator: true
-        }],
-        ['babel-root-import', {
+        ['babel-plugin-root-import', {
           rootPathPrefix: '/',
           rootPathSuffix: 'src'
-        }]
+        }],
+        'transform-es2015-modules-commonjs',
+        'transform-runtime'
       ]
     }
     var appBabelRcPath = path.join(wallaby.localProjectDir, relativeAppPath, '.babelrc')
@@ -135,6 +133,8 @@ function config(wallaby) {
           throw error;
         }
       }
+
+      require('reify/node/runtime')
 
       //
       // https://github.com/meteor/meteor/blob/devel/tools/static-assets/server/boot.js
