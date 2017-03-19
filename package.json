@@ -15,8 +15,8 @@
     "url": "git@github.com:mindhivenz/wallaby-meteor-config.git"
   },
   "dependencies": {
+    "@mindhive/babel-plugin-root-import": "^5.0.0",
     "babel-core": "^6.18.2",
-    "babel-plugin-root-import": "mindhivenz/babel-plugin-root-import.git#run-first",
     "babel-polyfill": "^6.16.0",
     "babel-preset-meteor": "^6.14.0",
     "babel-preset-react": "^6.16.0"

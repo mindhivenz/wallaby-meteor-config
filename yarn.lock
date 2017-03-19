@@ -2,6 +2,12 @@
 # yarn lockfile v1
 
 
+"@mindhive/babel-plugin-root-import@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@mindhive/babel-plugin-root-import/-/babel-plugin-root-import-5.0.0.tgz#c520404a23396bc9bd74a3f8a6d52a178a5a1cd9"
+  dependencies:
+    slash "^1.0.0"
+
 acorn@~4.0.5:
   version "4.0.11"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-4.0.11.tgz#edcda3bd937e7556410d42ed5860f67399c794c0"
@@ -158,12 +164,6 @@ babel-plugin-check-es2015-constants@^6.22.0:
   resolved "https://registry.yarnpkg.com/babel-plugin-check-es2015-constants/-/babel-plugin-check-es2015-constants-6.22.0.tgz#35157b101426fd2ffd3da3f75c7d1e91835bbf8a"
   dependencies:
     babel-runtime "^6.22.0"
-
-babel-plugin-root-import@mindhivenz/babel-plugin-root-import.git#run-first:
-  version "5.0.0"
-  resolved "https://codeload.github.com/mindhivenz/babel-plugin-root-import/tar.gz/c19c5759434ed5e7120b12c459e705c3ad648d20"
-  dependencies:
-    slash "^1.0.0"
 
 babel-plugin-syntax-async-functions@^6.13.0:
   version "6.13.0"
