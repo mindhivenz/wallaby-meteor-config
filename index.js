@@ -135,6 +135,7 @@ function config(wallaby) {
       require('babel-polyfill')
       require('reify/node/runtime')
 
+      // The below is Meteor's boot code
       //
       // https://github.com/meteor/meteor/blob/devel/tools/static-assets/server/boot.js
       //
