@@ -381,8 +381,7 @@ function config(wallaby) {
 
             // Unicode normalize the asset path to prevent string mismatches when
             // using this string elsewhere.
-            // TODO: not released yet
-            // assetPath = files.unicodeNormalizePath(assetPath);
+            assetPath = files.unicodeNormalizePath(assetPath);
 
             if (!fileInfo.assets || !_.has(fileInfo.assets, assetPath)) {
               _callback(new Error("Unknown asset: " + assetPath));
@@ -410,8 +409,7 @@ function config(wallaby) {
             absoluteFilePath: function (assetPath) {
               // Unicode normalize the asset path to prevent string mismatches when
               // using this string elsewhere.
-              // TODO: not released yet
-              // assetPath = files.unicodeNormalizePath(assetPath);
+              assetPath = files.unicodeNormalizePath(assetPath);
 
               if (!fileInfo.assets || !_.has(fileInfo.assets, assetPath)) {
                 throw new Error("Unknown asset: " + assetPath);
