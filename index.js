@@ -456,6 +456,9 @@ function config(wallaby) {
 
         // A lot of boot.js removed
 
+        // Because Wallaby will cancel a run, leaving us with leftovers in appContext
+        require('@mindhive/di').resetAppContext()
+
         process.chdir(appPath);
         wallaby.start();
       }).run();
