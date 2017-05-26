@@ -17,6 +17,7 @@
   "dependencies": {
     "@mindhive/babel-plugin-root-import": "^5.0.0",
     "babel-core": "^6.18.2",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
     "babel-polyfill": "^6.16.0",
     "babel-preset-meteor": "^6.14.0",
     "babel-preset-react": "^6.16.0"

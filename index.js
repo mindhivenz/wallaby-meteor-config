@@ -47,6 +47,9 @@ function config(wallaby) {
         'react'
       ],
       plugins: [
+        // Hmmm... this seems to bring in a very different version of reify from what Meteor users. Avoiding for now.
+        // 'transform-es2015-modules-reify',
+        'transform-es2015-modules-commonjs',
         ['@mindhive/babel-plugin-root-import', {
           rootPathPrefix: '/',
           rootPathSuffix: 'src'
@@ -101,7 +104,7 @@ function config(wallaby) {
     testFramework: 'mocha',
 
     workers: {
-      recycle: true,
+      recycle: true,  // REVISIT: without this Fibers break, but is probably slowing us down
     },
 
     debug: false,
@@ -110,6 +113,9 @@ function config(wallaby) {
       var relativeAppPath = 'src';
 
       wallaby.delayStart();
+
+      // Because Wallaby will cancel a run, leaving us with leftovers in appContext
+      require('@mindhive/di').resetAppContext()
 
       process.on('unhandledRejection', function(reason, promise) {
         var exception = reason.stack ? reason.stack.replace(/\(\/.*?\/instrumented\//g, '(') : reason
@@ -133,7 +139,10 @@ function config(wallaby) {
       }
 
       require('babel-polyfill')
-      require('reify/node/runtime')
+      require(path.resolve(
+        appPath,
+        '.meteor/local/build/programs/server/npm/node_modules/meteor/modules/node_modules/reify/node/runtime'
+      ))
 
       // The below is Meteor's boot code
       //
@@ -455,9 +464,6 @@ function config(wallaby) {
         });
 
         // A lot of boot.js removed
-
-        // Because Wallaby will cancel a run, leaving us with leftovers in appContext
-        require('@mindhive/di').resetAppContext()
 
         process.chdir(appPath);
         wallaby.start();
