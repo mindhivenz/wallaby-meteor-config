@@ -22,8 +22,8 @@ Additional options can be seen at the top of [index.js](https://github.com/mindh
 - `src`
   - `.specs`
   - `imports`
-  - `.meteor` (if you have multiple Meteor projects using this one source, 
-  		symlink the most important one to here)
+  - `.meteor` (if you have multiple Meteor projects using this one source dir, 
+  		symlink the to load Meteor packages from to here)
   - `.babelrc`
 
 Test files match `*.spec.js/jsx` and can be under `.specs` or `imports`.
@@ -35,5 +35,6 @@ and adds in the necessary plugins to mimic Meteor's Babel setup.
 The dependencies required to do this are automatically brought
 in by this package.
 
-If you need your own `.babelrc` (for example, if using Babel CLI to transpile a package)
-then that will be passed to Wallaby instead.
+If you put your own `.babelrc` in the project root (for example, 
+if using Babel CLI to transpile a package) then that will be used instead, 
+and must provide all the babel setup needed to work with Meteor. 
