@@ -109,13 +109,15 @@ function config(wallaby) {
 
     debug: false,
 
-    bootstrap: function () {
+    teardown: function () {
+      // Because Wallaby will cancel a run, leaving us with leftovers in appContext
+      require('@mindhive/di').resetAppContext()
+    },
+
+    bootstrap: function (wallaby) {
       var relativeAppPath = 'src';
 
       wallaby.delayStart();
-
-      // Because Wallaby will cancel a run, leaving us with leftovers in appContext
-      require('@mindhive/di').resetAppContext()
 
       process.on('unhandledRejection', function(reason, promise) {
         var exception = reason.stack ? reason.stack.replace(/\(\/.*?\/instrumented\//g, '(') : reason
