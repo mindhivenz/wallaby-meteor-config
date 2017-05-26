@@ -138,11 +138,18 @@ function config(wallaby) {
         }
       }
 
+      var Fiber = require("fibers");
+
       require('babel-polyfill')
       require(path.resolve(
         appPath,
         '.meteor/local/build/programs/server/npm/node_modules/meteor/modules/node_modules/reify/node/runtime'
       ))
+      // This should allow Fibers to work in across an await point in an async function but doesn't seem to work
+      require(path.resolve(
+        appPath,
+        '.meteor/local/build/programs/server/npm/node_modules/meteor/promise/node_modules/meteor-promise'
+      )).makeCompatible(Promise, Fiber)
 
       // The below is Meteor's boot code
       //
@@ -151,7 +158,6 @@ function config(wallaby) {
       // Modifications:
       // - Only load packages
 
-      var Fiber = require("fibers");
       var fs = require("fs");
       var path = require("path");
       var Future = require("fibers/future");
