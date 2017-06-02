@@ -109,11 +109,6 @@ function config(wallaby) {
 
     debug: false,
 
-    teardown: function () {
-      // Because Wallaby will cancel a run, leaving us with leftovers in appContext
-      require('@mindhive/di').resetAppContext()
-    },
-
     bootstrap: function (wallaby) {
       var relativeAppPath = 'src';
 
