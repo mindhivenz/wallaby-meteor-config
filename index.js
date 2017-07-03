@@ -36,40 +36,33 @@ function config(wallaby) {
     path.join(wallaby.localProjectDir, relativeAppPath, '.meteor/local/build/programs/server/node_modules');
 
   // REVISIT: would have thought with Wallaby changes this wouldn't be needed anymore
-  process.env.NODE_PATH += path.delimiter +
-    path.join(wallaby.localProjectDir, relativeAppPath, 'node_modules');
+  process.env.NODE_PATH += path.delimiter + path.join(wallaby.localProjectDir, relativeAppPath, 'node_modules');
 
-  var babelConfig
-  if (! fs.existsSync(path.join(wallaby.localProjectDir, '.babelrc'))) {
-    babelConfig = {
-      presets: [
-        'meteor',
-        'react'
-      ],
-      plugins: [
-        // Hmmm... this seems to bring in a very different version of reify from what Meteor users. Avoiding for now.
-        // 'transform-es2015-modules-reify',
-        'transform-es2015-modules-commonjs',
-        ['@mindhive/babel-plugin-root-import', {
-          rootPathPrefix: '/',
-          rootPathSuffix: 'src'
-        }]
-      ]
+  var babelConfig = require(
+    path.join(wallaby.localProjectDir, relativeAppPath,'.meteor/local/dev_bundle/lib/node_modules/meteor-babel/options')
+  ).getDefaults({ react: true, jscript: true })
+  function pushBabelOpts(key, opts) {
+    if (! babelConfig[key]) {
+      babelConfig[key] = []
     }
-    var appBabelRcPath = path.join(wallaby.localProjectDir, relativeAppPath, '.babelrc')
-    if (fs.existsSync(appBabelRcPath)) {
-      var appBabelConfig = JSON.parse(fs.readFileSync(appBabelRcPath));
-      for (k in appBabelConfig) {
-        if (! Array.isArray(appBabelConfig[k])) {
-          throw new Error('Not implemented yet')
-        }
-        if (! babelConfig[k]) {
-          babelConfig[k] = []
-        }
-        Array.prototype.push.apply(babelConfig[k], appBabelConfig[k])
+    Array.prototype.push.apply(babelConfig[key], opts)
+  }
+  var appBabelRcPath = path.join(wallaby.localProjectDir, relativeAppPath, '.babelrc')
+  if (fs.existsSync(appBabelRcPath)) {
+    var appBabelConfig = JSON.parse(fs.readFileSync(appBabelRcPath));
+    for (k in appBabelConfig) {
+      if (! Array.isArray(appBabelConfig[k])) {
+        throw new Error('Not implemented yet')
       }
+      pushBabelOpts(k, appBabelConfig[k])
     }
   }
+  // pushBabelOpts('plugins', [
+  //   ['@mindhive/babel-plugin-root-import', {
+  //     rootPathPrefix: '/',
+  //     rootPathSuffix: 'src'
+  //   }],
+  // ])
 
   var compiler = wallaby.compilers.babel(babelConfig)
 
@@ -121,9 +114,9 @@ function config(wallaby) {
 
       var path = require('path');
       var appPath = path.resolve(wallaby.localProjectDir, relativeAppPath);
-      var serverPath = path.resolve(appPath,
-        path.join('.meteor', 'local', 'build', 'programs', 'server')
-      );
+      var serverPath = path.resolve(appPath, '.meteor/local/build/programs/server');
+      var meteorModulesPath = path.resolve(appPath,'.meteor/local/dev_bundle/lib/node_modules')
+      var meteorServerModulesPath = path.resolve(appPath,'.meteor/local/dev_bundle/server-lib/node_modules')
       process.argv.splice(2, 0, 'program.json');
       try {
         process.chdir(serverPath);
@@ -138,15 +131,11 @@ function config(wallaby) {
       var Fiber = require("fibers");
 
       require('babel-polyfill')
-      require(path.resolve(
-        appPath,
-        '.meteor/local/build/programs/server/npm/node_modules/meteor/modules/node_modules/reify/node/runtime'
-      ))
+      require(path.join(meteorModulesPath, 'reify/lib/runtime'))
+        .enable(module.constructor.prototype)
       // This should allow Fibers to work in across an await point in an async function but doesn't seem to work
-      require(path.resolve(
-        appPath,
-        '.meteor/local/build/programs/server/npm/node_modules/meteor/promise/node_modules/meteor-promise'
-      )).makeCompatible(Promise, Fiber)
+      require(path.join(meteorServerModulesPath, 'meteor-promise'))
+        .makeCompatible(Promise, Fiber)
 
       // The below is Meteor's boot code
       //
@@ -156,17 +145,20 @@ function config(wallaby) {
       // - Only load packages
 
       var fs = require("fs");
-      var path = require("path");
+      // var path = require("path");
       var Future = require("fibers/future");
       var _ = require('underscore');
       var sourcemap_support = require('source-map-support');
 
-      var bootUtils = require(path.resolve(serverPath, './boot-utils.js'));
+      // var bootUtils = require(path.resolve(serverPath, './boot-utils.js'));
       var files = require(path.resolve(serverPath, './mini-files.js'));
       var npmRequire = require(path.resolve(serverPath, './npm-require.js')).require;
+      var Profile = require(path.resolve(serverPath, './profile.js')).Profile;
 
       // This code is duplicated in tools/main.js.
       var MIN_NODE_VERSION = 'v0.10.41';
+
+      var hasOwn = Object.prototype.hasOwnProperty;
 
       if (require('semver').lt(process.version, MIN_NODE_VERSION)) {
         process.stderr.write(
@@ -252,38 +244,33 @@ function config(wallaby) {
         wrapCallSite: wrapCallSite
       });
 
-      // Only enabled by default in development.
-      if (process.env.METEOR_SHELL_DIR) {
-        require(path.resolve(serverPath, './shell-server.js')).listen(process.env.METEOR_SHELL_DIR);
-      }
+      var specialArgPaths = {
+        "packages/modules-runtime.js": function () {
+          return {
+            npmRequire: npmRequire,
+            Profile: Profile
+          };
+        },
 
-      // As a replacement to the old keepalives mechanism, check for a running
-      // parent every few seconds. Exit if the parent is not running.
-      //
-      // Two caveats to this strategy:
-      // * Doesn't catch the case where the parent is CPU-hogging (but maybe we
-      //   don't want to catch that case anyway, since the bundler not yielding
-      //   is what caused #2536).
-      // * Could be fooled by pid re-use, i.e. if another process comes up and
-      //   takes the parent process's place before the child process dies.
-      var startCheckForLiveParent = function (parentPid) {
-        if (parentPid) {
-          if (! bootUtils.validPid(parentPid)) {
-            console.error("METEOR_PARENT_PID must be a valid process ID.");
-            process.exit(1);
-          }
+        "packages/dynamic-import.js": function (file) {
+          var dynamicImportInfo = {};
 
-          setInterval(function () {
-            try {
-              process.kill(parentPid, 0);
-            } catch (err) {
-              console.error("Parent process is dead! Exiting.");
-              process.exit(1);
-            }
-          }, 3000);
+          Object.keys(configJson.clientPaths).map(function (key) {
+            var programJsonPath = path.resolve(configJson.clientPaths[key]);
+            var programJson = require(programJsonPath);
+
+            dynamicImportInfo[key] = {
+              dynamicRoot: path.join(path.dirname(programJsonPath), "dynamic")
+            };
+          });
+
+          dynamicImportInfo.server = {
+            dynamicRoot: path.join(serverDir, "dynamic")
+          };
+
+          return { dynamicImportInfo: dynamicImportInfo };
         }
       };
-
 
       Fiber(function () {
         _.each(serverJson.load, function (fileInfo) {
@@ -433,13 +420,17 @@ function config(wallaby) {
             },
           };
 
-          var isModulesRuntime =
-            fileInfo.path === "packages/modules-runtime.js";
-
           var wrapParts = ["(function(Npm,Assets"];
-          if (isModulesRuntime) {
-            wrapParts.push(",npmRequire");
-          }
+
+          var specialArgs =
+            hasOwn.call(specialArgPaths, fileInfo.path) &&
+            specialArgPaths[fileInfo.path](fileInfo);
+
+          var specialKeys = Object.keys(specialArgs || {});
+          specialKeys.forEach(function (key) {
+            wrapParts.push("," + key);
+          });
+
           // \n is necessary in case final line is a //-comment
           wrapParts.push("){", code, "\n})");
           var wrapped = wrapParts.join("");
@@ -460,9 +451,11 @@ function config(wallaby) {
           // what require() uses to generate its errors.
           var func = require('vm').runInThisContext(wrapped, scriptPath, true);
           var args = [Npm, Assets];
-          if (isModulesRuntime) {
-            args.push(npmRequire);
-          }
+
+          specialKeys.forEach(function (key) {
+            args.push(specialArgs[key]);
+          });
+
           func.apply(global, args);
         });
 
