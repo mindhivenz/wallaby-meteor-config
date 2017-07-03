@@ -8,6 +8,7 @@
       "email": "damon@mindhive.co.nz"
     }
   ],
+  "license": "MIT",
   "private": false,
   "main": "./index.js",
   "repository": {
@@ -15,6 +16,7 @@
     "url": "git@github.com:mindhivenz/wallaby-meteor-config.git"
   },
   "dependencies": {
+    "@mindhive/babel-plugin-root-import": "^5.0.0",
     "babel-polyfill": "^6.16.0"
   }
 }

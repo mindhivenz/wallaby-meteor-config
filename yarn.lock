@@ -2,6 +2,12 @@
 # yarn lockfile v1
 
 
+"@mindhive/babel-plugin-root-import@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@mindhive/babel-plugin-root-import/-/babel-plugin-root-import-5.0.0.tgz#c520404a23396bc9bd74a3f8a6d52a178a5a1cd9"
+  dependencies:
+    slash "^1.0.0"
+
 babel-polyfill@^6.16.0:
   version "6.23.0"
   resolved "https://registry.yarnpkg.com/babel-polyfill/-/babel-polyfill-6.23.0.tgz#8364ca62df8eafb830499f699177466c3b03499d"
@@ -24,3 +30,7 @@ core-js@^2.4.0:
 regenerator-runtime@^0.10.0:
   version "0.10.5"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.10.5.tgz#336c3efc1220adcedda2c9fab67b5a7955a33658"
+
+slash@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/slash/-/slash-1.0.0.tgz#c41f2f6c39fc16d1cd17ad4b5d896114ae470d55"

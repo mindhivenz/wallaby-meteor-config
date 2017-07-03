@@ -38,9 +38,10 @@ function config(wallaby) {
   // REVISIT: would have thought with Wallaby changes this wouldn't be needed anymore
   process.env.NODE_PATH += path.delimiter + path.join(wallaby.localProjectDir, relativeAppPath, 'node_modules');
 
-  var babelConfig = require(
-    path.join(wallaby.localProjectDir, relativeAppPath,'.meteor/local/dev_bundle/lib/node_modules/meteor-babel/options')
-  ).getDefaults({ react: true, jscript: true })
+  var meteorNodeModules = path.join(wallaby.localProjectDir, relativeAppPath,'.meteor/local/dev_bundle/lib/node_modules')
+  var babelConfig = require(path.join(meteorNodeModules,'meteor-babel/options'))
+    .getDefaults({ react: true, jscript: true })
+  babelConfig.babel = require(path.join(meteorNodeModules, 'babel-core'))
   function pushBabelOpts(key, opts) {
     if (! babelConfig[key]) {
       babelConfig[key] = []
@@ -57,12 +58,12 @@ function config(wallaby) {
       pushBabelOpts(k, appBabelConfig[k])
     }
   }
-  // pushBabelOpts('plugins', [
-  //   ['@mindhive/babel-plugin-root-import', {
-  //     rootPathPrefix: '/',
-  //     rootPathSuffix: 'src'
-  //   }],
-  // ])
+  pushBabelOpts('plugins', [
+    ['@mindhive/babel-plugin-root-import', {
+      rootPathPrefix: '/',
+      rootPathSuffix: 'src'
+    }],
+  ])
 
   var compiler = wallaby.compilers.babel(babelConfig)
 
