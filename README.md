@@ -30,7 +30,8 @@ Test files match `*.spec.js/jsx` and can be under `.specs` or `imports`.
 
 ## Babel
 
-This Wallaby setup uses your Meteor app's `.babelrc` file (if it exists)
-to supplement the standard Meteor babel setup (just as Meteor does).
+If the project root has a `.babelrc` file then this is used. Otherwise:
 
-TODO: We should pull out this Babel setup so it can be used in other contexts.
+This Wallaby setup uses Meteor's standard Babel setup supplemented with 
+your app's `.babelrc` file (if it exists in `src`). This replicates 
+Meteor's standard behaviour. 

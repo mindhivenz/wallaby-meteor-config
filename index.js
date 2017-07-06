@@ -38,34 +38,39 @@ function config(wallaby) {
   // REVISIT: would have thought with Wallaby changes this wouldn't be needed anymore
   process.env.NODE_PATH += path.delimiter + path.join(wallaby.localProjectDir, relativeAppPath, 'node_modules');
 
-  var meteorNodeModules = path.join(wallaby.localProjectDir, relativeAppPath,'.meteor/local/dev_bundle/lib/node_modules')
-  var babelConfig = require(path.join(meteorNodeModules,'meteor-babel/options'))
-    .getDefaults({ react: true, jscript: true })
-  babelConfig.babel = require(path.join(meteorNodeModules, 'babel-core'))
-  function pushBabelOpts(key, opts) {
-    if (! babelConfig[key]) {
-      babelConfig[key] = []
-    }
-    Array.prototype.push.apply(babelConfig[key], opts)
-  }
-  var appBabelRcPath = path.join(wallaby.localProjectDir, relativeAppPath, '.babelrc')
-  if (fs.existsSync(appBabelRcPath)) {
-    var appBabelConfig = JSON.parse(fs.readFileSync(appBabelRcPath));
-    for (k in appBabelConfig) {
-      if (! Array.isArray(appBabelConfig[k])) {
-        throw new Error('Not implemented yet')
+  var compiler
+  if (fs.existsSync(path.join(wallaby.localProjectDir, '.babelrc'))) {
+    compiler = wallaby.compilers.babel()
+  } else {
+    var meteorNodeModules = path.join(wallaby.localProjectDir, relativeAppPath, '.meteor/local/dev_bundle/lib/node_modules')
+    var babelConfig = require(path.join(meteorNodeModules, 'meteor-babel/options'))
+      .getDefaults({ react: true, jscript: true })
+    babelConfig.babel = require(path.join(meteorNodeModules, 'babel-core'))
+    function pushBabelOpts(key, opts) {
+      if (! babelConfig[key]) {
+        babelConfig[key] = []
       }
-      pushBabelOpts(k, appBabelConfig[k])
+      Array.prototype.push.apply(babelConfig[key], opts)
     }
-  }
-  pushBabelOpts('plugins', [
-    ['@mindhive/babel-plugin-root-import', {
-      rootPathPrefix: '/',
-      rootPathSuffix: 'src'
-    }],
-  ])
 
-  var compiler = wallaby.compilers.babel(babelConfig)
+    var appBabelRcPath = path.join(wallaby.localProjectDir, relativeAppPath, '.babelrc')
+    if (fs.existsSync(appBabelRcPath)) {
+      var appBabelConfig = JSON.parse(fs.readFileSync(appBabelRcPath));
+      for (k in appBabelConfig) {
+        if (! Array.isArray(appBabelConfig[k])) {
+          throw new Error('Not implemented yet')
+        }
+        pushBabelOpts(k, appBabelConfig[k])
+      }
+    }
+    pushBabelOpts('plugins', [
+      ['@mindhive/babel-plugin-root-import', {
+        rootPathPrefix: '/',
+        rootPathSuffix: 'src'
+      }],
+    ])
+    compiler = wallaby.compilers.babel(babelConfig)
+  }
 
   return {
     files: [
