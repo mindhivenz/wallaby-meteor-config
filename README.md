@@ -20,7 +20,7 @@ Additional options can be seen at the top of [index.js](https://github.com/mindh
 ## Required project layout
 
 - `src`
-  - `.specs`
+  - `.specs` (make sue `!.specs` is in your `.eslintignore`)
   - `imports`
   - `.meteor` (if you have multiple Meteor projects using this one source dir, 
   		symlink one to this to load Meteor packages from)
